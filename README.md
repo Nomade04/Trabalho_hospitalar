@@ -8,14 +8,17 @@ O objetivo é fornecer uma base escalável e organizada para aplicações de sa�
 
 ---
 
-##  Tecnologias utilizadas
+##  Requerimentos utilizados
 - [Python 3.13](https://www.python.org/)
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [Uvicorn](https://www.uvicorn.org/) – servidor ASGI
 - [SQLAlchemy](https://www.sqlalchemy.org/) – ORM para banco de dados
 - [Pydantic](https://docs.pydantic.dev/) – validação de dados
+- [sqlalchemy-utils]()
+---   
+Baixe os requerimentos colocando o codigo no terminal
+- pip install -r requirements.txt
 
----
 
 ##  Estrutura de pastas
 
