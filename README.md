@@ -16,9 +16,6 @@ O objetivo é fornecer uma base escalável e organizada para aplicações de sa�
 - [Pydantic](https://docs.pydantic.dev/) – validação de dados
 - [sqlalchemy-utils]()
 ---   
-Baixe os requerimentos colocando o codigo no terminal
-- pip install -r requirements.txt
-
 
 ##  Estrutura de pastas
 
