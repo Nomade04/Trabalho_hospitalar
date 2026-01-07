@@ -7,7 +7,7 @@ class Consulta(Base):
 
     id_consulta = Column(Integer, primary_key=True)
     data_hora = Column(DateTime, nullable=False)
-    status = Column(String, nullable=False)
+    status = Column(String(20), nullable=False)
     tipo_presencial = Column(Boolean, nullable=False)
 
     id_paciente = Column(Integer, ForeignKey("paciente.id_paciente"), nullable=False)
