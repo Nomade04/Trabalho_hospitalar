@@ -15,6 +15,7 @@ O objetivo é fornecer uma base escalável e organizada para aplicações de sa�
 - [SQLAlchemy](https://www.sqlalchemy.org/) – ORM para banco de dados
 - [Pydantic](https://docs.pydantic.dev/) – validação de dados
 - [sqlalchemy-utils]()
+- [cryptography]()
 ---   
 
 ##  Estrutura de pastas

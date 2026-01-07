@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy_utils import database_exists, create_database
 
+
 MYSQL_USER = "root"
 MYSQL_PASSWORD = "root"
 MYSQL_HOST = "localhost"
@@ -18,3 +19,13 @@ if not database_exists(engine.url):
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
+def init_db():
+    import app.models
+    print(">>> Criando tabelas...")
+    Base.metadata.create_all(bind=engine)
+    print(">>> Tabelas criadas!")
+
+
+    Base.metadata.create_all(bind=engine)
+
