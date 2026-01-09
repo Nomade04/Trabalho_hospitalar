@@ -26,6 +26,12 @@ def init_db():
     Base.metadata.create_all(bind=engine)
     print(">>> Tabelas criadas!")
 
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
     Base.metadata.create_all(bind=engine)
 

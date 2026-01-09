@@ -6,6 +6,7 @@ class Paciente(Base):
     __tablename__ = "paciente"
 
     id_paciente = Column(Integer, primary_key=True)
+    senha = Column(String(150),nullable=False)
     nome = Column(String(100), nullable=False)
     cpf = Column(String(11), unique=True, nullable=False)
     data_nascimento = Column(Date, nullable=False)

@@ -10,5 +10,4 @@ class Estoque(Base):
     quantidade = Column(Integer, nullable=False)
     categoria = Column(String(20), nullable=False)
 
-    administracao = relationship("Administracao", back_populates="estoque")
 

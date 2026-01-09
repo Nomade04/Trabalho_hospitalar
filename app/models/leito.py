@@ -9,4 +9,3 @@ class Leito(Base):
     status_vago = Column(Boolean, nullable=False)
     localizacao = Column(String(50), nullable=False)
 
-    administracao = relationship("Administracao", back_populates="leito")

@@ -6,6 +6,7 @@ class Medico(Base):
     __tablename__ = "medico"
 
     id_medico = Column(Integer, primary_key = True, index = True)
+    senha = Column(String(150),nullable=False)
     nome = Column(String(100), nullable= False)
     cmr = Column(String(8), nullable= False, unique= True, index = True)
     especialidade = Column(String(20),nullable=False)
