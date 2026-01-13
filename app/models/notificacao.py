@@ -1,16 +1,18 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database import Base
+from datetime import datetime
 
 class Notificacao(Base):
     __tablename__ = "notificacao"
 
-    id = Column(Integer, primary_key=True)
-    tipo = Column(String(50), nullable=False)
-    mensagem = Column(String(300), nullable=False)
-    data_envio = Column(DateTime, nullable=False)
-
+    id_notificacao = Column(Integer, primary_key=True, index=True)
     id_paciente = Column(Integer, ForeignKey("paciente.id_paciente"), nullable=False)
+    id_medico = Column(Integer, ForeignKey("medico.id_medico"), nullable=False)
+    remetente = Column(String(20), nullable=False)  # "paciente" ou "medico"
+    conteudo = Column(String(500), nullable=False)
+    data_hora = Column(DateTime, default=datetime.utcnow)
 
-    paciente = relationship("Paciente", back_populates="notificacao")
+    paciente = relationship("Paciente", back_populates="notificacoes")
+    medico = relationship("Medico", back_populates="notificacoes")
 

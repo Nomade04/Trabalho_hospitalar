@@ -4,7 +4,7 @@ from app.database import get_db
 from app.models.medico import Medico
 from app.models.paciente import Paciente
 from app.models.administracao import Administracao
-from app.security import verificar_senha, criar_token_acesso
+from app.security.security import verificar_senha, criar_token_acesso
 from app.schemas.login import LoginRequest
 
 

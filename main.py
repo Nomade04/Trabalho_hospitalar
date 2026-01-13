@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.database import init_db
 from app.routes import login, home,cadastro
+from app.routes import consulta
 
 app = FastAPI()
 
@@ -12,3 +13,4 @@ def startup_event():
 app.include_router(home.router)
 app.include_router(login.router)
 app.include_router(cadastro.router)
+app.include_router(consulta.router)

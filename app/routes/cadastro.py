@@ -5,7 +5,7 @@ from app.database import get_db
 from app.models.paciente import Paciente
 from app.models.medico import Medico
 from app.models.administracao import Administracao
-from app.security import hash_senha
+from app.security.security import hash_senha
 from app.schemas.paciente import PacienteCreate
 from app.schemas.medico import MedicoCreate
 from app.schemas.administracao import AdminCreate
