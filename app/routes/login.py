@@ -22,7 +22,16 @@ def login(dados: LoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Email ou senha inválidos")
 
     tipo = usuario.__tablename__
-    token = criar_token_acesso({"sub": dados.email, "tipo": tipo})
+    if tipo == "medico":
+        user_id = usuario.id_medico
+    elif tipo == "paciente":
+        user_id = usuario.id_paciente
+    elif tipo == "administracao":
+        user_id = usuario.id_admin
+    else:
+        raise HTTPException(status_code=400, detail="Tipo de usuário desconhecido")
+
+    token = criar_token_acesso({"sub": str(user_id), "tipo": tipo})
 
     return {
         "access_token": token,

@@ -16,4 +16,4 @@ class Medico(Base):
     consulta = relationship("Consulta", back_populates="medico")
     prontuario = relationship("Prontuario", back_populates="medico")
     relatorio = relationship("Relatorio", back_populates="medico")
-
+    notificacoes = relationship("Notificacao", back_populates="medico")

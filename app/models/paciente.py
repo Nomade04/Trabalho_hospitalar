@@ -14,5 +14,5 @@ class Paciente(Base):
     email = Column(String(100), unique=True, nullable=False)
 
     consulta = relationship("Consulta", back_populates="paciente")
-    notificacao = relationship("Notificacao", back_populates="paciente")
+    notificacoes = relationship("Notificacao", back_populates="paciente")
     prontuario = relationship("Prontuario", back_populates="paciente", uselist=False)

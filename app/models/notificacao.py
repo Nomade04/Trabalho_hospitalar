@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base
 from datetime import datetime
+from app.database import Base
 
 class Notificacao(Base):
     __tablename__ = "notificacao"
@@ -15,4 +15,5 @@ class Notificacao(Base):
 
     paciente = relationship("Paciente", back_populates="notificacoes")
     medico = relationship("Medico", back_populates="notificacoes")
+
 
