@@ -15,8 +15,15 @@ def agendar_consulta(
     db: Session = Depends(get_db),
     user=Depends(tem_permissao("agendar_consulta"))
 ):
-    # Buscar paciente pelo email do token
-    paciente = db.query(Paciente).filter(Paciente.email == user["email"]).first()
+    # Tenta interpretar o "email" do token como id ou email
+    paciente = None
+    if user["email"].isdigit():
+        # se for número, busca pelo id
+        paciente = db.query(Paciente).filter(Paciente.id_paciente == int(user["email"])).first()
+    else:
+        # se for texto, busca pelo email
+        paciente = db.query(Paciente).filter(Paciente.email == user["email"]).first()
+
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente não encontrado")
 
@@ -48,10 +55,62 @@ def cancelar_consulta(
         raise HTTPException(status_code=404, detail="Consulta não encontrada")
 
     # Verifica se o paciente logado é o dono da consulta
-    paciente = db.query(Paciente).filter(Paciente.email == user["email"]).first()
+    paciente = None
+    if user["email"].isdigit():
+        # se o "sub" do token for id
+        paciente = db.query(Paciente).filter(Paciente.id_paciente == int(user["email"])).first()
+    else:
+        # se for email
+        paciente = db.query(Paciente).filter(Paciente.email == user["email"]).first()
+
     if not paciente or consulta.id_paciente != paciente.id_paciente:
         raise HTTPException(status_code=403, detail="Você só pode cancelar suas próprias consultas")
 
     consulta.status = "cancelada"
     db.commit()
     return {"msg": "Consulta cancelada com sucesso"}
+
+@router.post("/chamar")
+def chamar_consulta(
+    db: Session = Depends(get_db),
+    user=Depends(tem_permissao("chamar_consulta"))
+):
+    # Identifica o médico logado pelo token (id ou email)
+    medico = None
+    if user["email"].isdigit():
+        medico = db.query(Medico).filter(Medico.id_medico == int(user["email"])).first()
+    else:
+        medico = db.query(Medico).filter(Medico.email == user["email"]).first()
+
+    if not medico:
+        raise HTTPException(status_code=403, detail="Somente médicos podem chamar consultas")
+
+    # Busca a próxima consulta agendada para esse médico (mais próxima pela data/hora)
+    consulta = (
+        db.query(Consulta)
+        .filter(Consulta.id_medico == medico.id_medico, Consulta.status == "agendada")
+        .order_by(Consulta.data_hora.asc())
+        .first()
+    )
+
+    if not consulta:
+        raise HTTPException(status_code=404, detail="Nenhuma consulta agendada encontrada")
+
+    # Atualiza status para finalizada
+    consulta.status = "finalizada"
+    db.commit()
+    db.refresh(consulta)
+
+    # Busca dados do paciente
+    paciente = db.query(Paciente).filter(Paciente.id_paciente == consulta.id_paciente).first()
+
+    return {
+        "msg": "Consulta chamada e finalizada com sucesso",
+        "id_consulta": consulta.id_consulta,
+        "data_hora": consulta.data_hora,
+        "paciente": {
+            "id": paciente.id_paciente,
+            "nome": paciente.nome,
+            "email": paciente.email
+        }
+    }

@@ -6,7 +6,7 @@ class Prontuario(Base):
     __tablename__ = "prontuario"
 
     id = Column(Integer, primary_key=True)
-    observacoes = Column(String(500), nullable=False)
+    observacoes = Column(String(4000), nullable=False)
     data_atualizacao = Column(Date, nullable=False)
 
     id_medico = Column(Integer, ForeignKey("medico.id_medico"), nullable=False)

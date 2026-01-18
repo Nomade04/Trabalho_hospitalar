@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.database import init_db
-from app.routes import login, home, cadastro, consulta, notificacao
+from app.routes import login, home, cadastro, consulta, notificacao, agenda, prontuario, receita, relatorio
 
 app = FastAPI()
 
@@ -13,5 +13,11 @@ app.include_router(home)
 app.include_router(login)
 app.include_router(cadastro)
 app.include_router(consulta)
-app.include_router(notificacao)   # agora notificacao já é o router
+app.include_router(notificacao)
+app.include_router(agenda)
+app.include_router(prontuario)
+app.include_router(receita)
+app.include_router(relatorio)
+
+
 

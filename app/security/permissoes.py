@@ -15,7 +15,13 @@ PERMISSOES = {
         "atualizar_prontuario",
         "chamar_paciente",
         "emitir_receita",
-        "relatorio_uso"
+        "relatorio_uso",
+        "listar_consultas_medico",
+        "chamar_consulta",
+        "editar_prontuario",
+        "visualizar_prontuario",
+        "emitir_receita",
+        "criar_relatorio"
     },
     "administracao": {
         "cadastrar",
@@ -28,6 +34,7 @@ PERMISSOES = {
         "cancelar_consulta",
         "gerenciar_cadastros",
         "gerenciar_teleconsultas",
-        "gerar_relatorios"
+        "criar_relatorio"
+
     }
 }
