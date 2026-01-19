@@ -9,4 +9,5 @@ from .receita import router as receita
 from .relatorio import router as relatorio
 from .leito import router as leito
 from .usuarios import router as usuarios
+from .estoque import router as estoque
 

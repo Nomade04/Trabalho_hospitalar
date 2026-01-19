@@ -19,6 +19,8 @@ app.include_router(receita)
 app.include_router(relatorio)
 app.include_router(leito)
 app.include_router(usuarios)
+app.include_router(estoque)
+
 
 
 

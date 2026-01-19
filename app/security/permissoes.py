@@ -36,7 +36,8 @@ PERMISSOES = {
         "listar_usuarios",
         "gerenciar_teleconsultas",
         "criar_relatorio",
-        "deletar_usuario"
-
+        "deletar_usuario",
+        "adicionar_estoque",
+        "listar_estoque"
     }
 }
