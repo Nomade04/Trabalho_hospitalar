@@ -11,8 +11,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+        print("TOKEN DECODIFICADO:", payload)
+
         email: str = payload.get("sub")
         tipo: str = payload.get("tipo")
+
         if email is None or tipo is None:
             raise HTTPException(status_code=401, detail="Token inválido")
         return {"email": email, "tipo": tipo}

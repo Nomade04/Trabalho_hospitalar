@@ -5,8 +5,13 @@ from app.database import get_db
 from app.models.relatorio import Relatorio
 from app.models.medico import Medico
 from app.models.administracao import Administracao
-from app.security.dependencies import tem_permissao
 from app.schemas.relatorio import RelatorioCreate
+from app.security.dependencies import oauth2_scheme
+from app.security.security import SECRET_KEY, ALGORITHM
+from jose import jwt
+
+
+
 
 router = APIRouter(prefix="/relatorio", tags=["relatorio"])
 
@@ -14,11 +19,14 @@ router = APIRouter(prefix="/relatorio", tags=["relatorio"])
 def criar_relatorio(
     dados: RelatorioCreate,
     db: Session = Depends(get_db),
-    user=Depends(tem_permissao("criar_relatorio"))
+    token: str = Depends(oauth2_scheme)   # pega o token direto
 ):
-    # Se for médico logado
-    if user["tipo"] == "medico":
-        medico = db.query(Medico).filter(Medico.email == user["email"]).first()
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    user_id = int(payload.get("sub"))
+    tipo = payload.get("tipo")
+
+    if tipo == "medico":
+        medico = db.query(Medico).filter(Medico.id_medico == user_id).first()
         if not medico:
             raise HTTPException(status_code=403, detail="Médico não encontrado")
         relatorio = Relatorio(
@@ -29,9 +37,8 @@ def criar_relatorio(
         )
         emitido_por = medico.nome
 
-    # Se for administrador logado
-    elif user["tipo"] == "admin":
-        admin = db.query(Administracao).filter(Administracao.email == user["email"]).first()
+    elif tipo == "administracao":
+        admin = db.query(Administracao).filter(Administracao.id_admin == user_id).first()
         if not admin:
             raise HTTPException(status_code=403, detail="Administrador não encontrado")
         relatorio = Relatorio(
