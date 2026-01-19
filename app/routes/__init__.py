@@ -7,4 +7,6 @@ from .agenda import router as agenda
 from .prontuario import router as prontuario
 from .receita import router as receita
 from .relatorio import router as relatorio
+from .leito import router as leito
+from .usuarios import router as usuarios
 

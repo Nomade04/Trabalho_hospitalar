@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from app.database import init_db
-from app.routes import login, home, cadastro, consulta, notificacao, agenda, prontuario, receita, relatorio
-
+from app.routes.__init__ import *
 app = FastAPI()
 
 @app.on_event("startup")
@@ -18,6 +17,9 @@ app.include_router(agenda)
 app.include_router(prontuario)
 app.include_router(receita)
 app.include_router(relatorio)
+app.include_router(leito)
+app.include_router(usuarios)
+
 
 
 

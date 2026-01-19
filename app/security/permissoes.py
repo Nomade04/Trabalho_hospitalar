@@ -26,15 +26,17 @@ PERMISSOES = {
     "administracao": {
         "cadastrar",
         "login",
-        "gerenciar_leitos",
+        "cadastrar_leito",
         "gerenciar_estoque",
-        "gerenciar_agenda",
+        "listar_leitos",
+        "atualizar_leito",
         "enviar_notificacao",
         "agendar_consulta",
         "cancelar_consulta",
-        "gerenciar_cadastros",
+        "listar_usuarios",
         "gerenciar_teleconsultas",
-        "criar_relatorio"
+        "criar_relatorio",
+        "deletar_usuario"
 
     }
 }
