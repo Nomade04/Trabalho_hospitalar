@@ -29,3 +29,8 @@ class NotificacaoCreate(BaseModel):
         if v not in {"medico", "paciente"}:
             raise ValueError("tipo deve ser 'medico' ou 'paciente'")
         return v
+
+from pydantic import BaseModel
+
+class NotificacaoMedicoadmCreate(BaseModel):
+    conteudo: str

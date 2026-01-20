@@ -43,6 +43,7 @@ PERMISSOES = {
         "alterar_consulta",
         "listar_consultas",
         "cancelar_consultadm",
-        "criar_consultadm"
+        "criar_consultadm",
+        "listar_notificacoes_admin"
     }
 }

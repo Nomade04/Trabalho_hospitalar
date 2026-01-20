@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Notificacao, Medico
-from app.schemas.notificacao import NotificacaoPacienteCreate, NotificacaoMedicoCreate, NotificacaoCreate
+from app.schemas.notificacao import NotificacaoPacienteCreate, NotificacaoMedicoCreate, NotificacaoCreate,NotificacaoMedicoadmCreate
 from app.auth import get_current_user  # função que pega o usuário do token
 from app.models import Notificacao, Paciente
 from app.security.dependencies import tem_permissao
@@ -163,3 +163,55 @@ def enviar_notificacao(
         "conteudo": nova.conteudo,
         "data_hora": nova.data_hora
     }
+
+
+
+@router.post("/medico-admin")
+def enviar_notificacao_admin(
+    dados: NotificacaoMedicoadmCreate,
+    db: Session = Depends(get_db),
+    medico=Depends(get_current_user)
+):
+    if not hasattr(medico, "id_medico"):
+        raise HTTPException(status_code=403, detail="Somente médicos podem enviar mensagens para a administração")
+
+    nova_notificacao = Notificacao(
+        id_paciente=None,                # não há paciente envolvido
+        id_medico=None,      # remetente é o médico logado
+        remetente=medico.nome,           # agora o nome do médico
+        conteudo=dados.conteudo,
+        data_hora=datetime.utcnow()
+    )
+    db.add(nova_notificacao)
+    db.commit()
+    db.refresh(nova_notificacao)
+
+    return {
+        "msg": "Mensagem enviada para a administração com sucesso",
+        "remetente": medico.nome,
+        "destinatario": "Administração",
+        "conteudo": nova_notificacao.conteudo,
+        "data_hora": nova_notificacao.data_hora
+    }
+
+@router.get("/admin")
+def listar_notificacoes_admin(
+    db: Session = Depends(get_db),
+    user=Depends(tem_permissao("listar_notificacoes_admin"))  # apenas admins
+):
+    # Filtra notificações que não têm paciente nem médico vinculados
+    notificacoes = db.query(Notificacao).filter(
+        Notificacao.id_paciente.is_(None),
+        Notificacao.id_medico.is_(None)
+    ).all()
+
+    resultado = []
+    for n in notificacoes:
+        remetente_nome = n.remetente if n.remetente else "Desconhecido"
+        resultado.append({
+            "remetente": remetente_nome,
+            "conteudo": n.conteudo,
+            "data_hora": n.data_hora
+        })
+
+    return resultado
