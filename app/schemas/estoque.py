@@ -5,7 +5,9 @@ class EstoqueCreate(BaseModel):
     quantidade: int
     categoria: str
 
-from pydantic import BaseModel
-
 class EstoqueFiltro(BaseModel):
     categoria: str  # Ex: "EPI", "Medicamentos", ou "tudo"
+
+class EstoqueBaixa(BaseModel):
+    id: int           # ID do item no estoque
+    quantidade: int   # Quantidade a ser reduzida

@@ -4,7 +4,7 @@ from app.database import get_db
 from app.models.consulta import Consulta
 from app.models.medico import Medico
 from app.models.paciente import Paciente
-from app.schemas.consulta import ConsultaCreate
+from app.schemas.consulta import ConsultaCreate, ConsultaUpdate, ConsultaCancel, ConsultaCreateADM
 from app.security.dependencies import tem_permissao, get_current_user
 
 router = APIRouter(prefix="/consulta", tags=["consulta"])
@@ -113,4 +113,126 @@ def chamar_consulta(
             "nome": paciente.nome,
             "email": paciente.email
         }
+    }
+
+
+
+@router.patch("/alterar")
+def alterar_consulta(
+    dados: ConsultaUpdate,
+    db: Session = Depends(get_db),
+    user=Depends(tem_permissao("alterar_consulta"))
+):
+    consulta = db.query(Consulta).filter(Consulta.id_consulta == dados.id_consulta).first()
+    if not consulta:
+        raise HTTPException(status_code=404, detail="Consulta não encontrada")
+
+    # Verifica se o novo médico existe
+    medico = db.query(Medico).filter(Medico.id_medico == dados.id_medico).first()
+    if not medico:
+        raise HTTPException(status_code=404, detail="Médico não encontrado")
+
+    # Atualiza os campos
+    consulta.data_hora = dados.data_hora
+    consulta.status = dados.status
+    consulta.id_medico = dados.id_medico
+
+    db.commit()
+    db.refresh(consulta)
+
+    return {
+        "msg": "Consulta atualizada com sucesso",
+        "id_consulta": consulta.id_consulta,
+        "data_hora": consulta.data_hora,
+        "status": consulta.status,
+        "id_paciente": consulta.id_paciente,
+        "id_medico": consulta.id_medico
+    }
+
+
+
+@router.get("/listar")
+def listar_consultas(
+    db: Session = Depends(get_db),
+    user=Depends(tem_permissao("listar_consultas"))
+):
+    consultas = db.query(Consulta).all()
+
+    resultado = {}
+    for consulta in consultas:
+        status = consulta.status.lower()
+        if status not in resultado:
+            resultado[status] = []
+        resultado[status].append({
+            "id_consulta": consulta.id_consulta,
+            "data_hora": consulta.data_hora,
+            "tipo_presencial": consulta.tipo_presencial,
+            "id_paciente": consulta.id_paciente,
+            "id_medico": consulta.id_medico
+        })
+
+    return resultado
+
+
+
+
+@router.patch("/cancelarAdm")
+def cancelar_consulta(
+    dados: ConsultaCancel,
+    db: Session = Depends(get_db),
+    user=Depends(tem_permissao("cancelar_consultadm"))  # só admins
+):
+    consulta = db.query(Consulta).filter(Consulta.id_consulta == dados.id_consulta).first()
+    if not consulta:
+        raise HTTPException(status_code=404, detail="Consulta não encontrada")
+
+    consulta.status = "cancelada"
+    db.commit()
+    db.refresh(consulta)
+
+    return {
+        "msg": "Consulta cancelada com sucesso",
+        "id_consulta": consulta.id_consulta,
+        "data_hora": consulta.data_hora,
+        "status": consulta.status,
+        "id_paciente": consulta.id_paciente,
+        "id_medico": consulta.id_medico
+    }
+
+
+@router.post("/ADMcreate")
+def criar_consulta(
+    dados: ConsultaCreateADM,
+    db: Session = Depends(get_db),
+    user=Depends(tem_permissao("criar_consultadm"))  # admins ou médicos
+):
+    # Verifica se paciente existe
+    paciente = db.query(Paciente).filter(Paciente.id_paciente == dados.id_paciente).first()
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente não encontrado")
+
+    # Verifica se médico existe
+    medico = db.query(Medico).filter(Medico.id_medico == dados.id_medico).first()
+    if not medico:
+        raise HTTPException(status_code=404, detail="Médico não encontrado")
+
+    nova_consulta = Consulta(
+        data_hora=dados.data_hora,
+        status=dados.status,
+        tipo_presencial=dados.tipo_presencial,
+        id_paciente=dados.id_paciente,
+        id_medico=dados.id_medico
+    )
+    db.add(nova_consulta)
+    db.commit()
+    db.refresh(nova_consulta)
+
+    return {
+        "msg": "Consulta criada com sucesso",
+        "id_consulta": nova_consulta.id_consulta,
+        "data_hora": nova_consulta.data_hora,
+        "status": nova_consulta.status,
+        "tipo_presencial": nova_consulta.tipo_presencial,
+        "id_paciente": nova_consulta.id_paciente,
+        "id_medico": nova_consulta.id_medico
     }

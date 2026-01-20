@@ -30,7 +30,7 @@ PERMISSOES = {
         "gerenciar_estoque",
         "listar_leitos",
         "atualizar_leito",
-        "enviar_notificacao",
+        "enviar_notificacaoadm",
         "agendar_consulta",
         "cancelar_consulta",
         "listar_usuarios",
@@ -38,6 +38,11 @@ PERMISSOES = {
         "criar_relatorio",
         "deletar_usuario",
         "adicionar_estoque",
-        "listar_estoque"
+        "listar_estoque",
+        "baixa_estoque",
+        "alterar_consulta",
+        "listar_consultas",
+        "cancelar_consultadm",
+        "criar_consultadm"
     }
 }
